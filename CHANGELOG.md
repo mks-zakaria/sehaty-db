@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.4.0 (2026-07-14)
+
+### Features
+
+- Add persistent languages column to doctor_profiles
+  ([#12](https://github.com/mks-zakaria/sehaty-db/pull/12),
+  [`c0f9297`](https://github.com/mks-zakaria/sehaty-db/commit/c0f929784cde3f146ca3ef83bd2713153ffcdd22))
+
+
 ## v1.3.0 (2026-07-14)
 
 ### Code Style
