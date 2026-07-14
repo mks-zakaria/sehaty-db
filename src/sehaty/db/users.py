@@ -68,9 +68,11 @@ class DoctorProfile(SehatyBase):
     photo_url: Mapped[str | None] = mapped_column(String(512))
     address: Mapped[str | None] = mapped_column(String(512))
     city: Mapped[str | None] = mapped_column(String(128), index=True)
-    # PostGIS point (lon/lat, WGS84) for nearest-doctor search.
+    # PostGIS point (lon/lat, WGS84) for nearest-doctor search. The GIST index is
+    # added explicitly in a later migration (spatial_index=False avoids GeoAlchemy2's
+    # auto-index fighting Alembic on up/down cycles).
     geopoint: Mapped[object | None] = mapped_column(
-        Geography(geometry_type="POINT", srid=4326), nullable=True
+        Geography(geometry_type="POINT", srid=4326, spatial_index=False), nullable=True
     )
     consultation_fee: Mapped[float | None] = mapped_column(Float)
     verification_status: Mapped[VerificationStatus] = mapped_column(
