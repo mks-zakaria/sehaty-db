@@ -43,6 +43,9 @@ EXPECTED_TABLES = {
     "admin_config",
     "feature_flags",
     "ranking_weights",
+    # auth support
+    "refresh_tokens",
+    "phone_otp",
 }
 
 
