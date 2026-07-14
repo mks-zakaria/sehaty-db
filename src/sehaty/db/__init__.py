@@ -36,6 +36,7 @@ from sehaty.db.clinical import (  # noqa: F401
     RenewalRequest,
     RenewalStatus,
 )
+from sehaty.db.patients import ClinicPatient  # noqa: F401
 from sehaty.db.referral import Referral, ReferralStatus  # noqa: F401
 from sehaty.db.reputation import (  # noqa: F401
     ReputationScore,

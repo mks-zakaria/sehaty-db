@@ -44,3 +44,9 @@ class Appointment(SehatyBase, TimestampMixin):
     )
     reason: Mapped[str | None] = mapped_column(String(255))
     notes: Mapped[str | None] = mapped_column(String(1000))
+    # Link to the doctor's patient register (clinic_patients). Nullable so historic
+    # rows and new bookings without a register entry still validate; the migration
+    # backfills existing appointments.
+    clinic_patient_id: Mapped[int | None] = mapped_column(
+        ForeignKey("clinic_patients.id", ondelete="SET NULL"), nullable=True, index=True
+    )
