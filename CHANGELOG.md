@@ -2,6 +2,23 @@
 
 <!-- version list -->
 
+## v1.3.0 (2026-07-14)
+
+### Code Style
+
+- Ruff format auth models ([#10](https://github.com/mks-zakaria/sehaty-db/pull/10),
+  [`b83c71a`](https://github.com/mks-zakaria/sehaty-db/commit/b83c71a59f0c82893d59aeb971a33c1eb7833587))
+
+### Features
+
+- Add auth support tables ([#10](https://github.com/mks-zakaria/sehaty-db/pull/10),
+  [`b83c71a`](https://github.com/mks-zakaria/sehaty-db/commit/b83c71a59f0c82893d59aeb971a33c1eb7833587))
+
+- Add auth support tables (refresh tokens, phone OTP)
+  ([#10](https://github.com/mks-zakaria/sehaty-db/pull/10),
+  [`b83c71a`](https://github.com/mks-zakaria/sehaty-db/commit/b83c71a59f0c82893d59aeb971a33c1eb7833587))
+
+
 ## v1.2.0 (2026-07-14)
 
 ### Features
