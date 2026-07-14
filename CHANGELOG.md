@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.2.0 (2026-07-14)
+
+### Features
+
+- Add performance indexes (GIST geopoint + btree joins)
+  ([#8](https://github.com/mks-zakaria/sehaty-db/pull/8),
+  [`2011ea9`](https://github.com/mks-zakaria/sehaty-db/commit/2011ea93847dbea4ca4493a140a81794cee6cc0d))
+
+
 ## v1.1.0 (2026-07-14)
 
 ### Features
