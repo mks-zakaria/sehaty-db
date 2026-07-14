@@ -4,7 +4,7 @@ import enum
 from datetime import datetime
 
 from geoalchemy2 import Geography
-from sqlalchemy import Boolean, DateTime, Enum, Float, ForeignKey, String
+from sqlalchemy import Boolean, DateTime, Enum, Float, ForeignKey, Index, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from sehaty.db.base import SehatyBase, TimestampMixin
@@ -57,6 +57,10 @@ class PatientProfile(SehatyBase):
 
 class DoctorProfile(SehatyBase):
     __tablename__ = "doctor_profiles"
+    __table_args__ = (
+        # GIST spatial index for nearest-doctor / radius search on the geography point.
+        Index("idx_doctor_profiles_geopoint", "geopoint", postgresql_using="gist"),
+    )
 
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
