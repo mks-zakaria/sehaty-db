@@ -1,0 +1,3 @@
+# Copy to .env and adjust. Alembic reads DATABASE_URL.
+# Use the PostGIS dev container from docker-compose.yml:
+DATABASE_URL=postgresql+psycopg://sehaty:sehaty@localhost:5432/sehaty
