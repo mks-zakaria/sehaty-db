@@ -1,0 +1,29 @@
+name: migrations-pr
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: sehaty
+          POSTGRES_PASSWORD: sehaty
+          POSTGRES_DB: sehaty
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U sehaty" --health-interval 5s --health-retries 12
+    env:
+      DATABASE_URL: postgresql+psycopg://sehaty:sehaty@localhost:5432/sehaty
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync --all-extras --frozen
+      # Apply every revision, roll back one, re-apply, then fail on ORM/DB drift.
+      - run: uv run alembic -c src/sehaty/db/_migrations/alembic.ini upgrade head
+      - run: uv run alembic -c src/sehaty/db/_migrations/alembic.ini downgrade -1 || true
+      - run: uv run alembic -c src/sehaty/db/_migrations/alembic.ini upgrade head
+      - run: uv run alembic -c src/sehaty/db/_migrations/alembic.ini check
