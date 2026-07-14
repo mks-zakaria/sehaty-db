@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.5.0 (2026-07-14)
+
+### Features
+
+- Add clinic patient register (ClinicPatient) linked to appointments
+  ([#14](https://github.com/mks-zakaria/sehaty-db/pull/14),
+  [`b57f3c1`](https://github.com/mks-zakaria/sehaty-db/commit/b57f3c1c78b41098e526908826f4e9474af3f2c6))
+
+
 ## v1.4.0 (2026-07-14)
 
 ### Features
