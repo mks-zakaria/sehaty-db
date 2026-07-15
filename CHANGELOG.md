@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.9.0 (2026-07-15)
+
+### Features
+
+- Add doctor timezone and availability exceptions
+  ([#22](https://github.com/mks-zakaria/sehaty-db/pull/22),
+  [`5475cf0`](https://github.com/mks-zakaria/sehaty-db/commit/5475cf0921351c173699b387356b26bd93538069))
+
+
 ## v1.8.0 (2026-07-15)
 
 ### Features
