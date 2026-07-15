@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.10.0 (2026-07-15)
+
+### Features
+
+- Add exclusion constraint preventing overlapping active appointments
+  ([#24](https://github.com/mks-zakaria/sehaty-db/pull/24),
+  [`d824145`](https://github.com/mks-zakaria/sehaty-db/commit/d8241452fe5d11c97c2ca90a23dda3d0d535bf1b))
+
+
 ## v1.9.0 (2026-07-15)
 
 ### Features
