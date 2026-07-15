@@ -4,6 +4,7 @@ import enum
 from datetime import datetime
 
 from sqlalchemy import (
+    JSON,
     Boolean,
     DateTime,
     Enum,
@@ -290,6 +291,28 @@ class PracticeProfile(SehatyBase, TimestampMixin):
     is_default: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default=text("false"), default=False
     )
+
+
+class PrescriptionTemplate(SehatyBase, TimestampMixin):
+    """A doctor's reusable, named prescription preset (e.g. "Angine - adulte").
+
+    Lets a doctor pre-build a common prescription once and drop it into a new
+    prescription in one click. ``items`` holds freehand medication rows.
+    """
+
+    __tablename__ = "prescription_templates"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    doctor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    # Template name shown in the doctor's preset list.
+    name: Mapped[str] = mapped_column(String(160))
+    # Default advice / body printed under the drug list.
+    notes: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    # Freehand medication rows: a list of
+    # {drug_name, dosage, frequency, duration_days, instructions} dicts.
+    # Portable sa.JSON so it persists on both SQLite and Postgres; no server_default
+    # (Postgres `json` has no `=` operator, which would break alembic's `check`).
+    items: Mapped[list[dict]] = mapped_column(JSON, nullable=False, default=list)
 
 
 class AuditLog(SehatyBase):
