@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.8.0 (2026-07-15)
+
+### Features
+
+- Add ASSISTANT role and doctor-assistant membership
+  ([#20](https://github.com/mks-zakaria/sehaty-db/pull/20),
+  [`f654b5a`](https://github.com/mks-zakaria/sehaty-db/commit/f654b5acf40fa81aacd638e3706bfc828cc03005))
+
+
 ## v1.7.0 (2026-07-15)
 
 ### Features
