@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.11.0 (2026-07-15)
+
+### Features
+
+- Add reminder_sent_at to appointments ([#26](https://github.com/mks-zakaria/sehaty-db/pull/26),
+  [`c01a3ae`](https://github.com/mks-zakaria/sehaty-db/commit/c01a3ae393c8a337bae91d5d0a213cd3f30c419b))
+
+
 ## v1.10.0 (2026-07-15)
 
 ### Features
