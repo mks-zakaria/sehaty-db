@@ -54,6 +54,7 @@ from sehaty.db.scheduling import (  # noqa: F401
     Availability,
 )
 from sehaty.db.specialties import DoctorSpecialty, Specialty  # noqa: F401
+from sehaty.db.staff import DoctorAssistant  # noqa: F401
 from sehaty.db.users import (  # noqa: F401
     DoctorProfile,
     PatientProfile,
