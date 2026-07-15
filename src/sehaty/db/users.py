@@ -4,7 +4,7 @@ import enum
 from datetime import datetime
 
 from geoalchemy2 import Geography
-from sqlalchemy import JSON, Boolean, DateTime, Enum, Float, ForeignKey, Index, String
+from sqlalchemy import JSON, Boolean, DateTime, Enum, Float, ForeignKey, Index, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from sehaty.db.base import SehatyBase, TimestampMixin
@@ -80,6 +80,14 @@ class DoctorProfile(SehatyBase):
     # auto-index fighting Alembic on up/down cycles).
     geopoint: Mapped[object | None] = mapped_column(
         Geography(geometry_type="POINT", srid=4326, spatial_index=False), nullable=True
+    )
+    # Clinic's IANA timezone (e.g. "Africa/Casablanca"). Availability wall-clock
+    # times are interpreted in this zone so slots generate in local time rather than
+    # being wrongly treated as UTC. server_default backfills existing rows; a plain
+    # String server_default compares fine on Postgres (unlike JSON), so the model
+    # keeps the same server_default to stay clean under alembic check.
+    timezone: Mapped[str] = mapped_column(
+        String(64), nullable=False, server_default=text("'Africa/Casablanca'")
     )
     consultation_fee: Mapped[float | None] = mapped_column(Float)
     verification_status: Mapped[VerificationStatus] = mapped_column(

@@ -52,6 +52,8 @@ from sehaty.db.scheduling import (  # noqa: F401
     Appointment,
     AppointmentStatus,
     Availability,
+    AvailabilityException,
+    AvailabilityExceptionKind,
 )
 from sehaty.db.specialties import DoctorSpecialty, Specialty  # noqa: F401
 from sehaty.db.staff import DoctorAssistant  # noqa: F401

@@ -1,9 +1,9 @@
 """Scheduling models: doctor availability windows and patient appointments."""
 
 import enum
-from datetime import datetime, time
+from datetime import date, datetime, time
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Time
+from sqlalchemy import Date, DateTime, Enum, ForeignKey, Integer, String, Time
 from sqlalchemy.orm import Mapped, mapped_column
 
 from sehaty.db.base import SehatyBase, TimestampMixin
@@ -17,6 +17,13 @@ class AppointmentStatus(enum.StrEnum):
     NO_SHOW = "NO_SHOW"
 
 
+class AvailabilityExceptionKind(enum.StrEnum):
+    # Closed that day or for a specific time range (vacation/holiday).
+    BLOCK = "BLOCK"
+    # Extra one-off availability on that day (outside the recurring weekly schedule).
+    OPEN = "OPEN"
+
+
 class Availability(SehatyBase):
     """Recurring weekly bookable window for a doctor."""
 
@@ -28,6 +35,29 @@ class Availability(SehatyBase):
     start_time: Mapped[time] = mapped_column(Time)
     end_time: Mapped[time] = mapped_column(Time)
     slot_minutes: Mapped[int] = mapped_column(Integer, default=30)
+
+
+class AvailabilityException(SehatyBase, TimestampMixin):
+    """Date-specific override of a doctor's recurring weekly availability.
+
+    BLOCK closes the day (NULL start/end = whole day, otherwise the given window).
+    OPEN adds one-off availability on that day (start/end + slot_minutes define it).
+    """
+
+    __tablename__ = "availability_exceptions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    doctor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    date: Mapped[date] = mapped_column(Date, index=True)  # the specific calendar day
+    kind: Mapped[AvailabilityExceptionKind] = mapped_column(
+        Enum(AvailabilityExceptionKind, name="availability_exception_kind")
+    )
+    # Affected window. NULL start/end on a BLOCK = the whole day.
+    start_time: Mapped[time | None] = mapped_column(Time, nullable=True)
+    end_time: Mapped[time | None] = mapped_column(Time, nullable=True)
+    # Slot length for OPEN windows.
+    slot_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
 
 class Appointment(SehatyBase, TimestampMixin):
