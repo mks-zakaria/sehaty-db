@@ -35,6 +35,7 @@ from sehaty.db.clinical import (  # noqa: F401
     Prescription,
     PrescriptionItem,
     PrescriptionStatus,
+    PrescriptionTemplate,
     RenewalRequest,
     RenewalStatus,
     TreatmentFeedback,

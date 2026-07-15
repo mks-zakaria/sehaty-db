@@ -37,6 +37,7 @@ EXPECTED_TABLES = {
     "diagnoses",
     "treatment_feedback",
     "practice_profiles",
+    "prescription_templates",
     # reputation
     "reviews",
     "reputation_scores",
