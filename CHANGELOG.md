@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.12.0 (2026-07-15)
+
+### Features
+
+- Add prescription templates (reusable doctor presets)
+  ([#28](https://github.com/mks-zakaria/sehaty-db/pull/28),
+  [`60e0f1e`](https://github.com/mks-zakaria/sehaty-db/commit/60e0f1eca8fba60161578bd36012781640a6faf3))
+
+
 ## v1.11.0 (2026-07-15)
 
 ### Features
