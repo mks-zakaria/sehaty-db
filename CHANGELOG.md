@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.7.0 (2026-07-15)
+
+### Features
+
+- Link prescriptions to clinic patients (support walk-ins)
+  ([#18](https://github.com/mks-zakaria/sehaty-db/pull/18),
+  [`aa23d50`](https://github.com/mks-zakaria/sehaty-db/commit/aa23d508f8c9ddd2207374c60e958483b7da4bd2))
+
+
 ## v1.6.0 (2026-07-15)
 
 ### Features

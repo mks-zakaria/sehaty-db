@@ -1,1 +1,1 @@
-__version__ = "1.6.0"  # semantic-release rewrites this; do NOT hand-edit
+__version__ = "1.7.0"  # semantic-release rewrites this; do NOT hand-edit
