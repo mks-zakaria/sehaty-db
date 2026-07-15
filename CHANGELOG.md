@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.6.0 (2026-07-15)
+
+### Features
+
+- Add diagnoses, treatment feedback, practice profiles, and freehand prescriptions
+  ([#16](https://github.com/mks-zakaria/sehaty-db/pull/16),
+  [`9f51a0b`](https://github.com/mks-zakaria/sehaty-db/commit/9f51a0ba665283010bcef8bc4aa1a95ed3b042f9))
+
+
 ## v1.5.0 (2026-07-14)
 
 ### Features
