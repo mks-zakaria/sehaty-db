@@ -74,6 +74,11 @@ class Appointment(SehatyBase, TimestampMixin):
     )
     reason: Mapped[str | None] = mapped_column(String(255))
     notes: Mapped[str | None] = mapped_column(String(1000))
+    # Timestamp the patient reminder was sent (NULL = not yet reminded). Used to
+    # make reminder delivery idempotent so a reminder isn't sent twice.
+    reminder_sent_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     # Link to the doctor's patient register (clinic_patients). Nullable so historic
     # rows and new bookings without a register entry still validate; the migration
     # backfills existing appointments.
