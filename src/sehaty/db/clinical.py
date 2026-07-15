@@ -12,6 +12,7 @@ from sqlalchemy import (
     Integer,
     String,
     func,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -38,6 +39,14 @@ class RenewalStatus(enum.StrEnum):
     DECLINED = "DECLINED"
 
 
+class TreatmentOutcome(enum.StrEnum):
+    """How a patient reports they fared on a prescription/diagnosis/visit."""
+
+    BETTER = "BETTER"
+    SAME = "SAME"
+    WORSE = "WORSE"
+
+
 class Medication(SehatyBase):
     """Shared national medication catalog entry."""
 
@@ -61,6 +70,11 @@ class Prescription(SehatyBase, TimestampMixin):
     appointment_id: Mapped[int | None] = mapped_column(
         ForeignKey("appointments.id", ondelete="SET NULL")
     )
+    # Which letterhead (practice profile) this was issued under. Kept if the
+    # profile is later removed, so historical prescriptions stay printable.
+    practice_profile_id: Mapped[int | None] = mapped_column(
+        ForeignKey("practice_profiles.id", ondelete="SET NULL"), nullable=True
+    )
     # Public verification code + opaque QR token.
     code: Mapped[str] = mapped_column(String(32), unique=True, index=True)
     qr_token: Mapped[str] = mapped_column(String(64), unique=True, index=True)
@@ -68,6 +82,8 @@ class Prescription(SehatyBase, TimestampMixin):
         Enum(PrescriptionStatus, name="prescription_status"),
         default=PrescriptionStatus.ISSUED,
     )
+    # Free-text body / advice printed under the drug list.
+    notes: Mapped[str | None] = mapped_column(String(2000), nullable=True)
     issued_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
@@ -83,9 +99,15 @@ class PrescriptionItem(SehatyBase):
     prescription_id: Mapped[int] = mapped_column(
         ForeignKey("prescriptions.id", ondelete="CASCADE"), index=True
     )
-    medication_id: Mapped[int] = mapped_column(ForeignKey("medications.id"))
+    # Optional catalog link. NULL for freehand items a doctor types without the
+    # national catalog; drug_name then carries the free-text drug.
+    medication_id: Mapped[int | None] = mapped_column(ForeignKey("medications.id"), nullable=True)
+    # Free-text drug name when there is no catalog id.
+    drug_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
     dosage: Mapped[str] = mapped_column(String(128))  # e.g. "1 tablet"
     frequency: Mapped[str] = mapped_column(String(128))  # e.g. "twice a day"
+    # Free-text posology / extra instructions.
+    instructions: Mapped[str | None] = mapped_column(String(500), nullable=True)
     duration_days: Mapped[int | None] = mapped_column(Integer)
     quantity: Mapped[int] = mapped_column(Integer)
     quantity_dispensed: Mapped[int] = mapped_column(Integer, default=0)
@@ -190,6 +212,73 @@ class RenewalRequest(SehatyBase, TimestampMixin):
     note: Mapped[str | None] = mapped_column(String(500))
     resulting_prescription_id: Mapped[int | None] = mapped_column(
         ForeignKey("prescriptions.id", ondelete="SET NULL")
+    )
+
+
+class Diagnosis(SehatyBase, TimestampMixin):
+    """A disease/condition a doctor recorded for a register patient."""
+
+    __tablename__ = "diagnoses"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    doctor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    # The register patient this diagnosis belongs to.
+    clinic_patient_id: Mapped[int | None] = mapped_column(
+        ForeignKey("clinic_patients.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    appointment_id: Mapped[int | None] = mapped_column(
+        ForeignKey("appointments.id", ondelete="SET NULL"), nullable=True
+    )
+    # The disease/condition, free text.
+    label: Mapped[str] = mapped_column(String(255))
+    icd10: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    notes: Mapped[str | None] = mapped_column(String(2000), nullable=True)
+    diagnosed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class TreatmentFeedback(SehatyBase, TimestampMixin):
+    """A patient reporting whether a prescription/diagnosis/visit helped."""
+
+    __tablename__ = "treatment_feedback"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    clinic_patient_id: Mapped[int] = mapped_column(
+        ForeignKey("clinic_patients.id", ondelete="CASCADE"), index=True
+    )
+    # The patient app user who left the feedback; keep the row if they're removed.
+    author_user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    # One of "prescription" | "diagnosis" | "appointment".
+    target_type: Mapped[str] = mapped_column(String(24))
+    target_id: Mapped[int] = mapped_column(Integer)
+    outcome: Mapped[TreatmentOutcome] = mapped_column(
+        Enum(TreatmentOutcome, name="treatment_outcome")
+    )
+    comment: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+
+
+class PracticeProfile(SehatyBase, TimestampMixin):
+    """A doctor's letterhead for one location (they may have several)."""
+
+    __tablename__ = "practice_profiles"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    doctor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    name: Mapped[str] = mapped_column(String(160))  # e.g. "Cabinet Zerktouni"
+    clinic_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    address: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    city: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    phone: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    header_line: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    # Printed signature text; defaults to the doctor's name at the app layer.
+    signature_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    signature_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    # Filigrane text, e.g. the clinic name.
+    watermark_text: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    watermark_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    is_default: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default=text("false"), default=False
     )
 
 

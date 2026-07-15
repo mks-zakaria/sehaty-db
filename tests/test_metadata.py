@@ -30,6 +30,10 @@ EXPECTED_TABLES = {
     "notifications",
     "renewal_requests",
     "audit_logs",
+    # doctor workspace
+    "diagnoses",
+    "treatment_feedback",
+    "practice_profiles",
     # reputation
     "reviews",
     "reputation_scores",
