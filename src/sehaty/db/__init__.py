@@ -24,17 +24,21 @@ from sehaty.db.billing import (  # noqa: F401
 )
 from sehaty.db.clinical import (  # noqa: F401
     AuditLog,
+    Diagnosis,
     Dispense,
     DispenseItem,
     DrugInteraction,
     InteractionSeverity,
     Medication,
     Notification,
+    PracticeProfile,
     Prescription,
     PrescriptionItem,
     PrescriptionStatus,
     RenewalRequest,
     RenewalStatus,
+    TreatmentFeedback,
+    TreatmentOutcome,
 )
 from sehaty.db.patients import ClinicPatient  # noqa: F401
 from sehaty.db.referral import Referral, ReferralStatus  # noqa: F401
