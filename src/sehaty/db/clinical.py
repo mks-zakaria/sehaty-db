@@ -66,7 +66,17 @@ class Prescription(SehatyBase, TimestampMixin):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     doctor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
-    patient_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    # The app-user this prescription targets, when they have an account. Nullable
+    # because a prescription can target a walk-in register patient (via
+    # clinic_patient_id) who has no app account.
+    patient_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True
+    )
+    # The register patient this prescription is for. Lets doctors prescribe for ANY
+    # patient in their register, including walk-ins with no app account.
+    clinic_patient_id: Mapped[int | None] = mapped_column(
+        ForeignKey("clinic_patients.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     appointment_id: Mapped[int | None] = mapped_column(
         ForeignKey("appointments.id", ondelete="SET NULL")
     )
