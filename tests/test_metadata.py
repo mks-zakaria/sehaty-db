@@ -17,6 +17,7 @@ EXPECTED_TABLES = {
     # scheduling
     "availabilities",
     "appointments",
+    "availability_exceptions",
     # patient register
     "clinic_patients",
     # practice staffing
