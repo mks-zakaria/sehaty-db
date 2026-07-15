@@ -14,6 +14,9 @@ class UserRole(enum.StrEnum):
     PATIENT = "PATIENT"
     DOCTOR = "DOCTOR"
     ADMIN = "ADMIN"
+    # A doctor's assistant/secretary: logs in to manage the doctor's schedule and
+    # patient register (e.g. call patients to confirm appointments). Cannot prescribe.
+    ASSISTANT = "ASSISTANT"
 
 
 class VerificationStatus(enum.StrEnum):

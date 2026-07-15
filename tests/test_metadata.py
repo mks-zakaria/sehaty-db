@@ -19,6 +19,8 @@ EXPECTED_TABLES = {
     "appointments",
     # patient register
     "clinic_patients",
+    # practice staffing
+    "doctor_assistants",
     # clinical
     "medications",
     "prescriptions",
