@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.13.0 (2026-07-16)
+
+### Features
+
+- Add messaging threads and messages schema
+  ([#30](https://github.com/mks-zakaria/sehaty-db/pull/30),
+  [`cf1ac06`](https://github.com/mks-zakaria/sehaty-db/commit/cf1ac069addff36dae7b1356ac841b5f09b71003))
+
+
 ## v1.12.0 (2026-07-15)
 
 ### Features
