@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.15.0 (2026-07-19)
+
+### Features
+
+- **db**: Add PHARMACY user role ([#34](https://github.com/mks-zakaria/sehaty-db/pull/34),
+  [`970c262`](https://github.com/mks-zakaria/sehaty-db/commit/970c262a50864456fee6f03af408c30ccdecbe4c))
+
+
 ## v1.14.0 (2026-07-19)
 
 ### Features
