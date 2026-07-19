@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.16.0 (2026-07-19)
+
+### Features
+
+- **db**: Darija specialty label + starter provider types
+  ([#38](https://github.com/mks-zakaria/sehaty-db/pull/38),
+  [`064734b`](https://github.com/mks-zakaria/sehaty-db/commit/064734b4192ea677f9fa226e22a8d8045469f9d6))
+
+
 ## v1.15.1 (2026-07-19)
 
 ### Bug Fixes
