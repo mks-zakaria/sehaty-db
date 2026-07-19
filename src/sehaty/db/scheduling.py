@@ -3,7 +3,7 @@
 import enum
 from datetime import date, datetime, time
 
-from sqlalchemy import Date, DateTime, Enum, ForeignKey, Integer, String, Time
+from sqlalchemy import JSON, Date, DateTime, Enum, ForeignKey, Integer, String, Time
 from sqlalchemy.orm import Mapped, mapped_column
 
 from sehaty.db.base import SehatyBase, TimestampMixin
@@ -12,6 +12,11 @@ from sehaty.db.base import SehatyBase, TimestampMixin
 class AppointmentStatus(enum.StrEnum):
     REQUESTED = "REQUESTED"
     CONFIRMED = "CONFIRMED"
+    # Secretary confirmed the patient is physically present and the (acting) doctor
+    # is online at the cabinet: the visit is now in the doctor's waiting queue.
+    CHECKED_IN = "CHECKED_IN"
+    # The doctor has started the consultation (consultation_started_at is set).
+    IN_PROGRESS = "IN_PROGRESS"
     COMPLETED = "COMPLETED"
     CANCELLED = "CANCELLED"
     NO_SHOW = "NO_SHOW"
@@ -85,3 +90,27 @@ class Appointment(SehatyBase, TimestampMixin):
     clinic_patient_id: Mapped[int | None] = mapped_column(
         ForeignKey("clinic_patients.id", ondelete="SET NULL"), nullable=True, index=True
     )
+    # The cabinet session (a doctor's open shift) this visit was handled in. The
+    # session carries the ACTING doctor, which may differ from ``doctor_id`` when a
+    # substitute/locum covers for the owner. NULL for appointments booked/handled
+    # outside a cabinet session (e.g. historic rows).
+    cabinet_session_id: Mapped[int | None] = mapped_column(
+        ForeignKey("cabinet_sessions.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    # --- Consultation record (the encounter), filled in by the doctor at the desk.
+    # The scheduled slot is ``start_at``/``end_at``; these are the ACTUAL times the
+    # doctor started and finished seeing the patient.
+    consultation_started_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    consultation_ended_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    # The patient's presenting complaint in their own words (free text).
+    chief_complaint: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    # Structured symptoms captured during the visit (list/dict), JSON for training.
+    symptoms: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    # Structured vitals (e.g. {"bp": "120/80", "temp_c": 37.2, "hr": 72}), JSON.
+    vitals: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    # The doctor's examination findings / consultation notes (free text).
+    exam_notes: Mapped[str | None] = mapped_column(String(4000), nullable=True)
