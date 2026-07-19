@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.15.1 (2026-07-19)
+
+### Bug Fixes
+
+- **db**: Re-export PharmacyStock from sehaty.db
+  ([#36](https://github.com/mks-zakaria/sehaty-db/pull/36),
+  [`2a4f043`](https://github.com/mks-zakaria/sehaty-db/commit/2a4f043a4d8ac2e8aa8d790fdefcb313a07502da))
+
+
 ## v1.15.0 (2026-07-19)
 
 ### Features
