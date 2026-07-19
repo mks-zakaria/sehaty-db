@@ -28,6 +28,10 @@ EXPECTED_TABLES = {
     # cabinets (practice room + open shifts)
     "cabinets",
     "cabinet_sessions",
+    # pharmacy point-of-sale
+    "pharmacy_products",
+    "pharmacy_sales",
+    "pharmacy_sale_items",
     # clinical
     "medications",
     "prescriptions",
