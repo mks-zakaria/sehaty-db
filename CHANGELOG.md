@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.19.0 (2026-07-19)
+
+### Features
+
+- **db**: Cabinet waiting-room count + doctor alert threshold
+  ([#46](https://github.com/mks-zakaria/sehaty-db/pull/46),
+  [`64175ce`](https://github.com/mks-zakaria/sehaty-db/commit/64175ce3ec2edb23b40119df3d0adb886fb456f6))
+
+
 ## v1.18.0 (2026-07-19)
 
 ### Features
