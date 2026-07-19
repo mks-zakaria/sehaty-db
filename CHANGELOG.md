@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.17.0 (2026-07-19)
+
+### Features
+
+- **db**: Pharmacy POS — products, sales, sale items
+  ([#42](https://github.com/mks-zakaria/sehaty-db/pull/42),
+  [`1bbe00f`](https://github.com/mks-zakaria/sehaty-db/commit/1bbe00f288d2b3b065833e6cc0e922aab373490e))
+
+
 ## v1.16.1 (2026-07-19)
 
 ### Bug Fixes
