@@ -14,7 +14,7 @@ a session whose ``acting_doctor_id`` differs from the cabinet's ``owner_doctor_i
 
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from sehaty.db.base import SehatyBase, TimestampMixin
@@ -34,6 +34,14 @@ class Cabinet(SehatyBase, TimestampMixin):
     is_active: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default=text("true"), default=True
     )
+    # How many people are physically in the waiting room right now — maintained by
+    # the secretary (independent of the CHECKED_IN appointment queue).
+    waiting_room_count: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("0"), default=0
+    )
+    # Doctor-set alert threshold: when waiting_room_count reaches this and the
+    # doctor isn't online at the cabinet, notify them to head in. NULL = no alert.
+    waiting_alert_threshold: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
 class CabinetSession(SehatyBase, TimestampMixin):
