@@ -25,6 +25,9 @@ EXPECTED_TABLES = {
     "clinic_patients",
     # practice staffing
     "doctor_assistants",
+    # cabinets (practice room + open shifts)
+    "cabinets",
+    "cabinet_sessions",
     # clinical
     "medications",
     "prescriptions",

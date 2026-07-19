@@ -22,6 +22,7 @@ from sehaty.db.billing import (  # noqa: F401
     Subscription,
     SubscriptionStatus,
 )
+from sehaty.db.cabinets import Cabinet, CabinetSession  # noqa: F401
 from sehaty.db.clinical import (  # noqa: F401
     AuditLog,
     Diagnosis,
