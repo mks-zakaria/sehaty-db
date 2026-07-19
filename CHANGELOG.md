@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.16.1 (2026-07-19)
+
+### Bug Fixes
+
+- **db**: Remove stray French-slug specialties + backfill canonical darija
+  ([#40](https://github.com/mks-zakaria/sehaty-db/pull/40),
+  [`a3f527a`](https://github.com/mks-zakaria/sehaty-db/commit/a3f527a8b1cc8473efd0547c3516717159716773))
+
+
 ## v1.16.0 (2026-07-19)
 
 ### Features
