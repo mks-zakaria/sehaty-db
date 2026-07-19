@@ -27,6 +27,8 @@ class AvailabilityExceptionKind(enum.StrEnum):
     BLOCK = "BLOCK"
     # Extra one-off availability on that day (outside the recurring weekly schedule).
     OPEN = "OPEN"
+    # Daily patient cap for that date: accept at most ``max_patients`` bookings.
+    CAP = "CAP"
 
 
 class Availability(SehatyBase):
@@ -47,6 +49,7 @@ class AvailabilityException(SehatyBase, TimestampMixin):
 
     BLOCK closes the day (NULL start/end = whole day, otherwise the given window).
     OPEN adds one-off availability on that day (start/end + slot_minutes define it).
+    CAP limits that date to ``max_patients`` bookings (start/end/slot are unused).
     """
 
     __tablename__ = "availability_exceptions"
@@ -62,6 +65,8 @@ class AvailabilityException(SehatyBase, TimestampMixin):
     end_time: Mapped[time | None] = mapped_column(Time, nullable=True)
     # Slot length for OPEN windows.
     slot_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Max bookings for a CAP exception (NULL for BLOCK/OPEN).
+    max_patients: Mapped[int | None] = mapped_column(Integer, nullable=True)
     reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
 
