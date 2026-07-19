@@ -32,6 +32,7 @@ from sehaty.db.clinical import (  # noqa: F401
     InteractionSeverity,
     Medication,
     Notification,
+    PharmacyStock,
     PracticeProfile,
     Prescription,
     PrescriptionItem,
