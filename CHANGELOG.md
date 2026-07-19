@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.18.0 (2026-07-19)
+
+### Features
+
+- **db**: Availability daily patient cap ([#44](https://github.com/mks-zakaria/sehaty-db/pull/44),
+  [`0362832`](https://github.com/mks-zakaria/sehaty-db/commit/0362832c984e730c3f17aa886608cccf0766459a))
+
+
 ## v1.17.0 (2026-07-19)
 
 ### Features
