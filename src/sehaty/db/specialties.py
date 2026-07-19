@@ -15,6 +15,8 @@ class Specialty(SehatyBase):
     name_en: Mapped[str] = mapped_column(String(128))
     name_fr: Mapped[str] = mapped_column(String(128))
     name_ar: Mapped[str] = mapped_column(String(128))
+    # Moroccan Arabic (darija) label; NULL falls back to ``name_ar`` in the UI.
+    name_ary: Mapped[str | None] = mapped_column(String(128), nullable=True)
 
 
 class DoctorSpecialty(SehatyBase):
