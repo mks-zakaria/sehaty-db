@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v1.14.0 (2026-07-19)
+
+### Features
+
+- **db**: Cabinets, cabinet sessions, and appointment consultation record
+  ([#32](https://github.com/mks-zakaria/sehaty-db/pull/32),
+  [`c922566`](https://github.com/mks-zakaria/sehaty-db/commit/c922566a492e2a518796fe6c75aca0bc689db5ed))
+
+
 ## v1.13.0 (2026-07-16)
 
 ### Features
