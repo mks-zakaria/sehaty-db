@@ -23,6 +23,9 @@ EXPECTED_TABLES = {
     "messages",
     # patient register
     "clinic_patients",
+    # patient treatment ledger (charges + instalment payments)
+    "patient_charges",
+    "patient_payments",
     # practice staffing
     "doctor_assistants",
     # cabinets (practice room + open shifts)

@@ -44,6 +44,11 @@ from sehaty.db.clinical import (  # noqa: F401
     TreatmentOutcome,
 )
 from sehaty.db.messaging import Message, MessageThread  # noqa: F401
+from sehaty.db.patient_ledger import (  # noqa: F401
+    PatientCharge,
+    PatientPayment,
+    PaymentMethod,
+)
 from sehaty.db.patients import ClinicPatient  # noqa: F401
 from sehaty.db.pharmacy_products import (  # noqa: F401
     PharmacyProduct,
