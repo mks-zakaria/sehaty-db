@@ -2,6 +2,20 @@
 
 <!-- version list -->
 
+## v1.20.0 (2026-07-21)
+
+### Continuous Integration
+
+- Auto-deploy to the droplet on push to main
+  ([#48](https://github.com/mks-zakaria/sehaty-db/pull/48),
+  [`bb5f62a`](https://github.com/mks-zakaria/sehaty-db/commit/bb5f62a90b53139a3ae3fad8e5987f5729bd5a6d))
+
+### Features
+
+- **db**: Patient treatment ledger (charges + instalment payments)
+  ([`5a158a3`](https://github.com/mks-zakaria/sehaty-db/commit/5a158a327206cb96fa3cfad9f2825c7dca652866))
+
+
 ## v1.19.0 (2026-07-19)
 
 ### Features
