@@ -45,9 +45,7 @@ class LandingEvent(SehatyBase):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    doctor_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"), index=True
-    )
+    doctor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     type: Mapped[LandingEventType] = mapped_column(
         Enum(LandingEventType, name="landing_event_type")
     )

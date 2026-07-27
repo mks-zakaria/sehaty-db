@@ -69,9 +69,7 @@ class OutboundMessage(SehatyBase, TimestampMixin):
     """
 
     __tablename__ = "outbound_messages"
-    __table_args__ = (
-        Index("ix_outbound_messages_appt_sent", "appointment_id", "sent_at"),
-    )
+    __table_args__ = (Index("ix_outbound_messages_appt_sent", "appointment_id", "sent_at"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     appointment_id: Mapped[int] = mapped_column(
@@ -86,9 +84,7 @@ class OutboundMessage(SehatyBase, TimestampMixin):
     status: Mapped[OutboundStatus] = mapped_column(
         Enum(OutboundStatus, name="outbound_status"), default=OutboundStatus.QUEUED
     )
-    sent_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=utcnow, index=True
-    )
+    sent_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
     # Provider's message id, for reconciling delivery webhooks back to this row.
     provider_message_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
     # Cost in thousandths of a centime, so per-message pricing stays exact in

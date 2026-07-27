@@ -46,30 +46,20 @@ class WaitlistEntry(SehatyBase, TimestampMixin):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    doctor_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"), index=True
-    )
-    patient_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"), index=True
-    )
+    doctor_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    patient_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     status: Mapped[WaitlistStatus] = mapped_column(
         Enum(WaitlistStatus, name="waitlist_status"), default=WaitlistStatus.WAITING
     )
     # Earliest date the patient can attend; NULL means "anything".
-    earliest_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    earliest_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     # Latest useful date — past it the entry stops being offered rather than
     # sitting in the queue forever proposing slots nobody wants.
-    latest_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    latest_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     # The appointment currently offered to this patient, if any.
     offered_appointment_id: Mapped[int | None] = mapped_column(
         ForeignKey("appointments.id", ondelete="SET NULL"), nullable=True
     )
-    offered_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
-    )
+    offered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     note: Mapped[str | None] = mapped_column(String(300), nullable=True)
     joined_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
