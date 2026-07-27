@@ -54,7 +54,8 @@ EXPECTED_TABLES = {
     # appointment confirmations + waitlist
     "waitlist_entries",
     "outbound_messages",
-    # public-landing analytics
+    # public-landing config + analytics
+    "doctor_landings",
     "landing_events",
     # reputation
     "reviews",
