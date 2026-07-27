@@ -88,8 +88,15 @@ def upgrade() -> None:
         # Thousandths of a centime — integer arithmetic, no float drift.
         sa.Column("cost_micros", sa.Integer(), nullable=True),
         sa.Column("error", sa.String(400), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
+        # Matches TimestampMixin exactly: created_at only, defaulted by the
+        # database. A hand-written column that drifts from the mixin fails
+        # `alembic check`.
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.func.now(),
+        ),
     )
     op.create_index(
         "ix_outbound_messages_appointment_id", "outbound_messages", ["appointment_id"]

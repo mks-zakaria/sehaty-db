@@ -57,8 +57,15 @@ def upgrade() -> None:
         sa.Column("offered_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("note", sa.String(300), nullable=True),
         sa.Column("joined_at", sa.DateTime(timezone=True), nullable=False),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
+        # Matches TimestampMixin exactly: created_at only, defaulted by the
+        # database. A hand-written column that drifts from the mixin fails
+        # `alembic check`.
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            nullable=False,
+            server_default=sa.func.now(),
+        ),
         # Asking twice must not double a patient's odds or send two offers.
         sa.UniqueConstraint("doctor_id", "patient_id", name="uq_waitlist_doctor_patient"),
     )
