@@ -50,6 +50,7 @@ from sehaty.db.confirmations import (  # noqa: F401
     OutboundStatus,
 )
 from sehaty.db.landing_events import LandingEvent, LandingEventType  # noqa: F401
+from sehaty.db.landing_pages import DoctorLanding  # noqa: F401
 from sehaty.db.messaging import Message, MessageThread  # noqa: F401
 from sehaty.db.patient_ledger import (  # noqa: F401
     PatientCharge,
