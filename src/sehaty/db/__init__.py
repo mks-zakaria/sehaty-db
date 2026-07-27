@@ -43,6 +43,13 @@ from sehaty.db.clinical import (  # noqa: F401
     TreatmentFeedback,
     TreatmentOutcome,
 )
+from sehaty.db.confirmations import (  # noqa: F401
+    ConfirmationChannel,
+    ConfirmationStatus,
+    OutboundMessage,
+    OutboundStatus,
+)
+from sehaty.db.landing_events import LandingEvent, LandingEventType  # noqa: F401
 from sehaty.db.messaging import Message, MessageThread  # noqa: F401
 from sehaty.db.patient_ledger import (  # noqa: F401
     PatientCharge,
@@ -73,11 +80,14 @@ from sehaty.db.scheduling import (  # noqa: F401
 from sehaty.db.specialties import DoctorSpecialty, Specialty  # noqa: F401
 from sehaty.db.staff import DoctorAssistant  # noqa: F401
 from sehaty.db.users import (  # noqa: F401
+    ClaimStatus,
     DoctorProfile,
     PatientProfile,
+    ProfileSource,
     User,
     UserRole,
     VerificationStatus,
 )
+from sehaty.db.waitlist import WaitlistEntry, WaitlistStatus  # noqa: F401
 
 # Every domain added under sehaty/db/<domain>.py gets one import block here.

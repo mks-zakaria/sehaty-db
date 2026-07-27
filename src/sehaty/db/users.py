@@ -22,6 +22,35 @@ class UserRole(enum.StrEnum):
     PHARMACY = "PHARMACY"
 
 
+class ClaimStatus(enum.StrEnum):
+    """Whether the doctor has taken ownership of their public page.
+
+    Pages are published from public professional data before the doctor is ever
+    contacted, so most start UNCLAIMED. That state is shown on the page itself
+    with a "vous êtes ce médecin ?" banner and a removal link — publishing
+    someone's professional listing is defensible, publishing it with no way to
+    correct or remove it is not.
+    """
+
+    # Built by us from public data; the doctor has not engaged.
+    UNCLAIMED = "UNCLAIMED"
+    # The doctor asked for it and we handed it over, but identity is unproven.
+    CLAIMED = "CLAIMED"
+    # Identity checked against the licence — the only state that shows a badge.
+    VERIFIED = "VERIFIED"
+    # The doctor asked to be delisted. Kept as a tombstone so a later import
+    # cannot silently republish them.
+    REMOVAL_REQUESTED = "REMOVAL_REQUESTED"
+
+
+class ProfileSource(enum.StrEnum):
+    """How the profile got here — needed to honour removals and audit imports."""
+
+    MANUAL = "MANUAL"
+    IMPORT = "IMPORT"
+    SELF_SIGNUP = "SELF_SIGNUP"
+
+
 class VerificationStatus(enum.StrEnum):
     PENDING = "PENDING"
     VERIFIED = "VERIFIED"
@@ -78,6 +107,11 @@ class DoctorProfile(SehatyBase):
     photo_url: Mapped[str | None] = mapped_column(String(512))
     address: Mapped[str | None] = mapped_column(String(512))
     city: Mapped[str | None] = mapped_column(String(128), index=True)
+    # Neighbourhood within the city, as displayed ("Maârif", "Gauthier"). Stored
+    # separately from the free-text ``address`` because it is a browse axis: it
+    # drives /{city}/{district}/{specialty} pages and the searches people
+    # actually type here ("dentiste maarif"). Indexed for the directory filter.
+    district: Mapped[str | None] = mapped_column(String(128), index=True)
     # PostGIS point (lon/lat, WGS84) for nearest-doctor search. The GIST index is
     # added explicitly in a later migration (spatial_index=False avoids GeoAlchemy2's
     # auto-index fighting Alembic on up/down cycles).
@@ -93,6 +127,32 @@ class DoctorProfile(SehatyBase):
         String(64), nullable=False, server_default=text("'Africa/Casablanca'")
     )
     consultation_fee: Mapped[float | None] = mapped_column(Float)
+    # --- Public cabinet contact. Distinct from ``User.phone``, which is the login
+    # identity (unique, private). These are the numbers printed on the public
+    # landing page: the patient calls the cabinet, not the doctor's account.
+    # ``whatsapp`` is stored separately because it is frequently a different line
+    # from the fixed one and it drives the page's primary CTA.
+    phone_fixe: Mapped[str | None] = mapped_column(String(32))
+    phone_mobile: Mapped[str | None] = mapped_column(String(32))
+    whatsapp: Mapped[str | None] = mapped_column(String(32))
+    # Weekly opening hours, one entry per open weekday:
+    #   [{"weekday": 0, "ranges": [["09:00", "12:30"], ["15:00", "19:00"]]}, ...]
+    # ``weekday`` follows the same convention as ``Availability.weekday``
+    # (0=Monday .. 6=Sunday); a missing weekday (or empty ``ranges``) means closed.
+    # Two ranges is the norm here — Moroccan cabinets almost always break at midday.
+    # Structured rather than free text because it also feeds the page's
+    # openingHoursSpecification JSON-LD and the doctor's Google listing.
+    # Portable JSON so it persists on both SQLite (tests) and Postgres (prod);
+    # see ``languages`` for why there is no server_default on the model.
+    opening_hours: Mapped[list[dict]] = mapped_column(JSON, nullable=False, default=list)
+    # Accepted third-party payers, as slugs: ["cnss", "cnops", "amo", "saham", ...].
+    # Empty list = unspecified. One of the first things a patient checks.
+    insurances: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    # Whether the cabinet advances the insurer's share (tiers payant) rather than
+    # making the patient pay in full and claim it back.
+    tiers_payant: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, server_default=text("false"), default=False
+    )
     verification_status: Mapped[VerificationStatus] = mapped_column(
         Enum(VerificationStatus, name="verification_status"),
         default=VerificationStatus.PENDING,
@@ -103,6 +163,25 @@ class DoctorProfile(SehatyBase):
     # alembic's server-default comparison. The migration backfills existing rows with
     # '[]' then drops the server default, so the DB matches this (default=list) model.
     languages: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    # Ownership of the public page, distinct from ``verification_status`` (which
+    # gates whether the page is publicly visible at all).
+    claim_status: Mapped[ClaimStatus] = mapped_column(
+        Enum(ClaimStatus, name="claim_status"),
+        nullable=False,
+        server_default=text("'UNCLAIMED'"),
+        default=ClaimStatus.UNCLAIMED,
+        index=True,
+    )
+    source: Mapped[ProfileSource] = mapped_column(
+        Enum(ProfileSource, name="profile_source"),
+        nullable=False,
+        server_default=text("'MANUAL'"),
+        default=ProfileSource.MANUAL,
+    )
+    # When a delisting was requested, so the honouring of it is auditable.
+    removal_requested_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     referral_code: Mapped[str | None] = mapped_column(String(32), unique=True, index=True)
     # Secretariat account for a practice: manage calendar, cannot prescribe.
     is_staff: Mapped[bool] = mapped_column(Boolean, default=False)

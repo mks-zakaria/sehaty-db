@@ -3,10 +3,11 @@
 import enum
 from datetime import date, datetime, time
 
-from sqlalchemy import JSON, Date, DateTime, Enum, ForeignKey, Integer, String, Time
+from sqlalchemy import JSON, Date, DateTime, Enum, ForeignKey, Integer, String, Time, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from sehaty.db.base import SehatyBase, TimestampMixin
+from sehaty.db.confirmations import ConfirmationChannel, ConfirmationStatus
 
 
 class AppointmentStatus(enum.StrEnum):
@@ -85,9 +86,34 @@ class Appointment(SehatyBase, TimestampMixin):
     reason: Mapped[str | None] = mapped_column(String(255))
     notes: Mapped[str | None] = mapped_column(String(1000))
     # Timestamp the patient reminder was sent (NULL = not yet reminded). Used to
-    # make reminder delivery idempotent so a reminder isn't sent twice.
+    # make reminder delivery idempotent so a reminder isn't sent twice. This is
+    # the T-2h nudge; the T-24h confirmation ask is ``confirmation_sent_at``
+    # below — two distinct sends with different jobs.
     reminder_sent_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
+    )
+    # --- Will the patient actually turn up? See ``confirmations.py``.
+    confirmation_status: Mapped[ConfirmationStatus] = mapped_column(
+        Enum(ConfirmationStatus, name="confirmation_status"),
+        nullable=False,
+        server_default=text("'PENDING'"),
+        default=ConfirmationStatus.PENDING,
+        index=True,
+    )
+    confirmation_sent_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    confirmation_replied_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    confirmation_channel: Mapped[ConfirmationChannel | None] = mapped_column(
+        Enum(ConfirmationChannel, name="confirmation_channel"), nullable=True
+    )
+    # Rule-based 0-4 risk that this patient will not show. Deliberately not a
+    # model: with no history there is nothing to train on, and a secretary will
+    # not act on a number she cannot argue with. Recomputed on read.
+    no_show_score: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default=text("0"), default=0
     )
     # Link to the doctor's patient register (clinic_patients). Nullable so historic
     # rows and new bookings without a register entry still validate; the migration
