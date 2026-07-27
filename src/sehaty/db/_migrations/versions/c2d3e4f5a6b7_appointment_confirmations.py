@@ -8,6 +8,7 @@ from collections.abc import Sequence
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -20,15 +21,26 @@ _CONFIRMATION_STATUSES = ("PENDING", "CONFIRMED", "DECLINED", "NO_REPLY")
 _CHANNELS = ("WHATSAPP_MANUAL", "WHATSAPP_API", "SMS", "CALL")
 _OUTBOUND_STATUSES = ("QUEUED", "SENT", "DELIVERED", "READ", "FAILED")
 
+# Postgres enum types are created explicitly below, so every column reference
+# must use `create_type=False`. A plain `sa.Enum` re-emits CREATE TYPE when it is
+# attached to a column, which collides with the explicit create and aborts the
+# migration with "type ... already exists".
+
+
 
 def upgrade() -> None:
     bind = op.get_bind()
-    confirmation_status = sa.Enum(*_CONFIRMATION_STATUSES, name="confirmation_status")
-    channel = sa.Enum(*_CHANNELS, name="confirmation_channel")
-    outbound_status = sa.Enum(*_OUTBOUND_STATUSES, name="outbound_status")
-    confirmation_status.create(bind, checkfirst=True)
-    channel.create(bind, checkfirst=True)
-    outbound_status.create(bind, checkfirst=True)
+    sa.Enum(*_CONFIRMATION_STATUSES, name="confirmation_status").create(bind, checkfirst=True)
+    sa.Enum(*_CHANNELS, name="confirmation_channel").create(bind, checkfirst=True)
+    sa.Enum(*_OUTBOUND_STATUSES, name="outbound_status").create(bind, checkfirst=True)
+
+    confirmation_status = postgresql.ENUM(
+        *_CONFIRMATION_STATUSES, name="confirmation_status", create_type=False
+    )
+    channel = postgresql.ENUM(*_CHANNELS, name="confirmation_channel", create_type=False)
+    outbound_status = postgresql.ENUM(
+        *_OUTBOUND_STATUSES, name="outbound_status", create_type=False
+    )
 
     op.add_column(
         "appointments",

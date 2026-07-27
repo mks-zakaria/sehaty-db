@@ -8,6 +8,7 @@ from collections.abc import Sequence
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -19,13 +20,22 @@ depends_on: str | Sequence[str] | None = None
 _CLAIM_STATUSES = ("UNCLAIMED", "CLAIMED", "VERIFIED", "REMOVAL_REQUESTED")
 _PROFILE_SOURCES = ("MANUAL", "IMPORT", "SELF_SIGNUP")
 
+# Postgres enum types are created explicitly below, so every column reference
+# must use `create_type=False`. A plain `sa.Enum` re-emits CREATE TYPE when it is
+# attached to a column, which collides with the explicit create and aborts the
+# migration with "type ... already exists".
+
+
 
 def upgrade() -> None:
-    claim_status = sa.Enum(*_CLAIM_STATUSES, name="claim_status")
-    profile_source = sa.Enum(*_PROFILE_SOURCES, name="profile_source")
     bind = op.get_bind()
-    claim_status.create(bind, checkfirst=True)
-    profile_source.create(bind, checkfirst=True)
+    sa.Enum(*_CLAIM_STATUSES, name="claim_status").create(bind, checkfirst=True)
+    sa.Enum(*_PROFILE_SOURCES, name="profile_source").create(bind, checkfirst=True)
+
+    claim_status = postgresql.ENUM(*_CLAIM_STATUSES, name="claim_status", create_type=False)
+    profile_source = postgresql.ENUM(
+        *_PROFILE_SOURCES, name="profile_source", create_type=False
+    )
 
     # Existing rows predate the import pipeline, so they were entered by hand and
     # belong to doctors we already dealt with directly: MANUAL, and treated as

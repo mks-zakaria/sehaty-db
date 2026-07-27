@@ -8,6 +8,7 @@ from collections.abc import Sequence
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -18,10 +19,16 @@ depends_on: str | Sequence[str] | None = None
 
 _STATUSES = ("WAITING", "OFFERED", "ACCEPTED", "PASSED", "CANCELLED")
 
+# Postgres enum types are created explicitly below, so every column reference
+# must use `create_type=False`. A plain `sa.Enum` re-emits CREATE TYPE when it is
+# attached to a column, which collides with the explicit create and aborts the
+# migration with "type ... already exists".
+
+
 
 def upgrade() -> None:
-    status = sa.Enum(*_STATUSES, name="waitlist_status")
-    status.create(op.get_bind(), checkfirst=True)
+    sa.Enum(*_STATUSES, name="waitlist_status").create(op.get_bind(), checkfirst=True)
+    status = postgresql.ENUM(*_STATUSES, name="waitlist_status", create_type=False)
 
     op.create_table(
         "waitlist_entries",
