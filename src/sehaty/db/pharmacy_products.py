@@ -41,16 +41,12 @@ class PharmacyProduct(SehatyBase, TimestampMixin):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    pharmacy_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"), index=True
-    )
+    pharmacy_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     barcode: Mapped[str] = mapped_column(String(128), index=True)
     name: Mapped[str] = mapped_column(String(200))
     kind: Mapped[ProductKind] = mapped_column(Enum(ProductKind, name="product_kind"))
     # Optional link to the medication catalogue when kind is MEDICINE.
-    medication_id: Mapped[int | None] = mapped_column(
-        ForeignKey("medications.id"), nullable=True
-    )
+    medication_id: Mapped[int | None] = mapped_column(ForeignKey("medications.id"), nullable=True)
     price: Mapped[float | None] = mapped_column(Float, nullable=True)
     quantity: Mapped[int] = mapped_column(Integer, default=0)
     low_threshold: Mapped[int] = mapped_column(Integer, default=10)
@@ -63,9 +59,7 @@ class Sale(SehatyBase):
     __tablename__ = "pharmacy_sales"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    pharmacy_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"), index=True
-    )
+    pharmacy_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     sold_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), index=True
     )
