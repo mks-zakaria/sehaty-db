@@ -51,6 +51,11 @@ EXPECTED_TABLES = {
     "treatment_feedback",
     "practice_profiles",
     "prescription_templates",
+    # appointment confirmations + waitlist
+    "waitlist_entries",
+    "outbound_messages",
+    # public-landing analytics
+    "landing_events",
     # reputation
     "reviews",
     "reputation_scores",
