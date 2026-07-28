@@ -73,9 +73,30 @@ class GeoPrecision(enum.StrEnum):
 
 
 class VerificationStatus(enum.StrEnum):
+    """Whether anyone has actually checked who this doctor is.
+
+    LISTED exists because publishing a directory and vouching for a doctor are
+    different acts, and conflating them put a "Vérifié" badge on several
+    thousand practitioners nobody had ever spoken to. A page compiled from a
+    public professional directory is legitimate to publish; it is not a
+    statement that we confirmed a licence, and on a medical directory that
+    distinction is the whole of the platform's credibility.
+
+    LISTED pages are publicly visible and searchable. Only VERIFIED earns the
+    badge, and only accreditation — a human deciding this professional is who
+    they say — grants it.
+    """
+
     PENDING = "PENDING"
+    # Published from public professional data. Visible, never badged.
+    LISTED = "LISTED"
     VERIFIED = "VERIFIED"
     REJECTED = "REJECTED"
+
+    @classmethod
+    def publicly_visible(cls) -> frozenset["VerificationStatus"]:
+        """The statuses whose pages render to a patient."""
+        return frozenset({cls.LISTED, cls.VERIFIED})
 
 
 class User(SehatyBase, TimestampMixin):
