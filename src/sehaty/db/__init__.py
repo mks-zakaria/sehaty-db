@@ -83,6 +83,7 @@ from sehaty.db.staff import DoctorAssistant  # noqa: F401
 from sehaty.db.users import (  # noqa: F401
     ClaimStatus,
     DoctorProfile,
+    GeoPrecision,
     PatientProfile,
     ProfileSource,
     User,
