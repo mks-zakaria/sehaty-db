@@ -53,6 +53,7 @@ EXPECTED_TABLES = {
     "prescription_templates",
     # appointment confirmations + waitlist
     "waitlist_entries",
+    "articles",
     "outbound_messages",
     # public-landing config + analytics
     "doctor_landings",

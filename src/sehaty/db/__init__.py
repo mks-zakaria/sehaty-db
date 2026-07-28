@@ -11,6 +11,7 @@ from sehaty.db.admin_config import (  # noqa: F401
     FeatureFlag,
     RankingWeights,
 )
+from sehaty.db.articles import Article, ArticleStatus  # noqa: F401
 from sehaty.db.auth import PhoneOtp, RefreshToken  # noqa: F401
 from sehaty.db.base import SehatyBase, TimestampMixin, utcnow  # noqa: F401
 from sehaty.db.billing import (  # noqa: F401
