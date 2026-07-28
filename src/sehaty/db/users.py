@@ -51,6 +51,27 @@ class ProfileSource(enum.StrEnum):
     SELF_SIGNUP = "SELF_SIGNUP"
 
 
+class GeoPrecision(enum.StrEnum):
+    """How much a doctor's coordinates can be trusted.
+
+    Imported pages are geocoded from written addresses, and Moroccan cabinet
+    addresses are lotissement-and-block references that no map database holds:
+    "Madinat Errahma, bloc U4, n°107" resolves at best to the town. So a pin
+    exists, but it is the neighbourhood, not the door.
+
+    That difference has to be recorded rather than assumed, because the two are
+    used for different things. An APPROXIMATE point is fine for "doctors near
+    me" — it puts the cabinet in the right quartier. It is not fine for turn-by-
+    turn directions, which must fall back to the written address instead of
+    confidently driving a patient to a centroid.
+    """
+
+    # Geocoded to the street or building, or a pin placed by hand.
+    EXACT = "EXACT"
+    # A district or town centroid: right neighbourhood, wrong door.
+    APPROXIMATE = "APPROXIMATE"
+
+
 class VerificationStatus(enum.StrEnum):
     PENDING = "PENDING"
     VERIFIED = "VERIFIED"
@@ -117,6 +138,13 @@ class DoctorProfile(SehatyBase):
     # auto-index fighting Alembic on up/down cycles).
     geopoint: Mapped[object | None] = mapped_column(
         Geography(geometry_type="POINT", srid=4326, spatial_index=False), nullable=True
+    )
+    # How far to trust ``geopoint``. NULL alongside a NULL geopoint means "never
+    # geocoded"; NULL alongside a set geopoint means a pre-existing point of
+    # unknown provenance, which callers should treat as EXACT since that is how
+    # they behaved before this column existed.
+    geo_precision: Mapped[GeoPrecision | None] = mapped_column(
+        Enum(GeoPrecision, name="geo_precision"), nullable=True
     )
     # Clinic's IANA timezone (e.g. "Africa/Casablanca"). Availability wall-clock
     # times are interpreted in this zone so slots generate in local time rather than
