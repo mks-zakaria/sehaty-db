@@ -146,6 +146,14 @@ class DoctorProfile(SehatyBase):
     slug: Mapped[str] = mapped_column(String(160), unique=True, index=True)
     license_no: Mapped[str] = mapped_column(String(64), unique=True)
     bio: Mapped[str | None] = mapped_column(String(2000))
+    # The same presentation in each language the page can render:
+    # {"fr": "...", "ar": "...", "ary": "..."}.
+    #
+    # Not a translation of `bio` — a Darija presentation and a French one are
+    # written differently, not word-for-word, and a doctor dictating at a visit
+    # gives you one of them and approves the others. `bio` stays as the fallback
+    # for anything not filled in, so nothing that exists today stops rendering.
+    bio_i18n: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     photo_url: Mapped[str | None] = mapped_column(String(512))
     address: Mapped[str | None] = mapped_column(String(512))
     city: Mapped[str | None] = mapped_column(String(128), index=True)
