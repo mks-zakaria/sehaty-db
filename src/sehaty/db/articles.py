@@ -261,9 +261,7 @@ class ArticleEvent(SehatyBase):
     """
 
     __tablename__ = "article_events"
-    __table_args__ = (
-        Index("ix_article_events_article_occurred", "article_id", "occurred_at"),
-    )
+    __table_args__ = (Index("ix_article_events_article_occurred", "article_id", "occurred_at"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     article_id: Mapped[int] = mapped_column(
