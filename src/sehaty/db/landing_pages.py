@@ -41,6 +41,16 @@ class DoctorLanding(SehatyBase, TimestampMixin):
     # Template key resolved by the landing app ("dentistry", "psychiatry", ...).
     # NULL = fall back to the doctor's primary specialty, then to "general".
     template: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    # Which of the page designs to build the template with ("classic",
+    # "editorial", "compact", "clinique"). The template answers *which sections
+    # and in what order*; the layout answers *what the page looks like*. They are
+    # separate columns because they are separate decisions: a dentist page is
+    # always acts-first, but the dentist who is buying it may want the editorial
+    # look and the one next door the compact one.
+    #
+    # NULL = "classic", the design every imported page was published with — so
+    # nothing already printed on a plaque changes appearance on deploy.
+    layout: Mapped[str | None] = mapped_column(String(32), nullable=True)
     # Brand accent as a hex string, e.g. "#2b73b3". Part of the paid tier: it is
     # the change a doctor notices first and asks for most.
     accent: Mapped[str | None] = mapped_column(String(9), nullable=True)

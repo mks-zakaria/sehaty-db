@@ -28,6 +28,7 @@ EXPECTED_TABLES = {
     "patient_payments",
     # practice staffing
     "doctor_assistants",
+    "doctor_booking_switches",
     # cabinets (practice room + open shifts)
     "cabinets",
     "cabinet_sessions",
@@ -54,6 +55,9 @@ EXPECTED_TABLES = {
     # appointment confirmations + waitlist
     "waitlist_entries",
     "articles",
+    "article_events",
+    "article_validations",
+    "article_votes",
     "outbound_messages",
     # public-landing config + analytics
     "doctor_landings",

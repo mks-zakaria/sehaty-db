@@ -11,7 +11,15 @@ from sehaty.db.admin_config import (  # noqa: F401
     FeatureFlag,
     RankingWeights,
 )
-from sehaty.db.articles import Article, ArticleStatus  # noqa: F401
+from sehaty.db.articles import (  # noqa: F401
+    Article,
+    ArticleEvent,
+    ArticleEventType,
+    ArticleStatus,
+    ArticleValidation,
+    ArticleVote,
+    ValidationVerdict,
+)
 from sehaty.db.auth import PhoneOtp, RefreshToken  # noqa: F401
 from sehaty.db.base import SehatyBase, TimestampMixin, utcnow  # noqa: F401
 from sehaty.db.billing import (  # noqa: F401
@@ -23,6 +31,7 @@ from sehaty.db.billing import (  # noqa: F401
     Subscription,
     SubscriptionStatus,
 )
+from sehaty.db.booking_switch import DoctorBookingSwitch  # noqa: F401
 from sehaty.db.cabinets import Cabinet, CabinetSession  # noqa: F401
 from sehaty.db.clinical import (  # noqa: F401
     AuditLog,

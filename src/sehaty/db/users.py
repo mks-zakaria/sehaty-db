@@ -239,6 +239,8 @@ class DoctorProfile(SehatyBase):
     removal_requested_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    # The hand switch for this doctor's agenda lives in `doctor_booking_switches`
+    # rather than here — see that table for why.
     referral_code: Mapped[str | None] = mapped_column(String(32), unique=True, index=True)
     # Secretariat account for a practice: manage calendar, cannot prescribe.
     is_staff: Mapped[bool] = mapped_column(Boolean, default=False)
