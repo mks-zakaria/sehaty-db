@@ -116,6 +116,18 @@ class Article(SehatyBase, TimestampMixin):
     # Arabic equivalent are different texts, not translations of one another.
     locale: Mapped[str] = mapped_column(String(8), default="ar")
 
+    # The subject two articles share when they are the same answer in different
+    # languages, e.g. "sunburn-degrees". It is deliberately NOT a translation
+    # pointer: neither version is the original. Each is written from the same
+    # textbook passages in its own language, because translating a clinical term
+    # produces the one error a validating doctor is least likely to catch — it
+    # reads fluently.
+    #
+    # NULL for an article with no counterpart, which is the normal state for a
+    # doctor's own answer. Grouping is by equality of this key, so an article
+    # never has to know which others exist.
+    topic_key: Mapped[str | None] = mapped_column(String(120), nullable=True, index=True)
+
     # The patient's question, as a patient would type it.
     title: Mapped[str] = mapped_column(String(300))
     slug: Mapped[str] = mapped_column(String(320), index=True)
