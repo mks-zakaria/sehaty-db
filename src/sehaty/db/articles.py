@@ -155,6 +155,17 @@ class Article(SehatyBase, TimestampMixin):
         Enum(ArticleStatus, name="article_status"), default=ArticleStatus.DRAFT
     )
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # When a finished draft should go live by itself.
+    #
+    # Separate from `published_at`, which records when it *did*. A DRAFT with a
+    # date here is scheduled; a DRAFT without one is simply unfinished, and must
+    # never be published by a sweep that was aiming at something else. That
+    # distinction is the whole safety property of the scheduler: opting in is an
+    # explicit act, so nothing goes public because a job ran.
+    scheduled_for: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True, index=True
+    )
     # Why it was turned down, shown to the author. A rejection nobody can act on
     # is just a wall.
     review_note: Mapped[str | None] = mapped_column(String(500), nullable=True)
